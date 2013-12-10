@@ -28,82 +28,84 @@
         }
     </style>
 </head>
-<body>
-<script src="Scripts/jquery-1.6.4.js"></script>
-<script src="Scripts/jquery-ui-1.10.2.js"></script>
-<script src="Scripts/jquery.signalR-1.0.1.js"></script>
-<script src="/signalr/hubs"></script>
-<script>
-    $(function () {
+    <body>
+        <script src="Scripts/jquery-1.6.4.js"></script>
+        <script src="Scripts/jquery-ui-1.10.2.js"></script>
+        <script src="Scripts/jquery.signalR-1.0.1.js"></script>
+        <script src="/signalr/hubs"></script>
+        <script>
+            $(function () {
 
-        var count = 1;
-        var moveShapeHub = $.connection.moveShapeHub,
-            $shape = $("#dmeLogo"),
-            // Send a maximum of 10 messages per second 
+                var count = 1;
+                var moveShapeHub = $.connection.moveShapeHub,
+                    $shape = $("#dmeLogo"),
+                    // Send a maximum of 10 messages per second 
             // (mouse movements trigger a lot of messages)
-            messageFrequency = 10,
-            // Determine how often to send messages in
+                    messageFrequency = 10,
+                    // Determine how often to send messages in
             // time to abide by the messageFrequency
-            updateRate = 1000 / messageFrequency,
-            shapeModel = {
-                left: 0,
-                top: 0
-            },
-            moved = false;
+                    updateRate = 1000 / messageFrequency,
+                    shapeModel = {
+                        left: 0,
+                        top: 0
+                    },
+                    moved = false;
 
-        moveShapeHub.client.updateShape = function (model) {
-            shapeModel = model;
-            // Slowly move the shape towards the new location (interpolate)
-            // The updateInterval is used as the duration because by the time 
-            // we get to the next location we want to be at the "last" location
-            // We also clear the animation queue so that we start a new animation 
-            // and don't lag behind.
-            $shape.animate(shapeModel, { duration: updateRate, queue: false });
-            updateCord();
-        };
-
-        $.connection.hub.start().done(function () {
-            $shape.draggable({
-                drag: function () {
-                    shapeModel = $shape.offset();
+                moveShapeHub.client.updateShape = function (model) {
+                    shapeModel = model;
+                    // Slowly move the shape towards the new location (interpolate)
+                    // The updateInterval is used as the duration because by the time 
+                    // we get to the next location we want to be at the "last" location
+                    // We also clear the animation queue so that we start a new animation 
+                    // and don't lag behind.
+                    $shape.animate(shapeModel, { duration: updateRate, queue: false });
                     updateCord();
-                    moved = true;
+                };
+
+                $.connection.hub.start().done(function () {
+                    $shape.draggable({
+                        drag: function () {
+                            shapeModel = $shape.offset();
+                            updateCord();
+                            moved = true;
                    
+                        }
+                    });
+
+                    // Start the client side server update interval
+                    setInterval(updateServerModel, updateRate);
+                });
+
+                function updateServerModel() {
+                    // Only update server if we have a new movement
+                    if (moved) {
+                        moveShapeHub.server.updateModel(shapeModel);
+                        moved = false;
+                    }
+                    updateCounter();
                 }
+        
+
+                function updateCounter() {
+                    var rowCount = $('#ulPosition li').length;
+                    $('.counter a').text(rowCount);
+                }
+        
+                function updateCord() {
+                    $('#position ul').append('<li class="pResults"> TOP: ' + shapeModel.top + ' ... LEFT: ' + shapeModel.left + '</li>');
+                }
+
             });
+        </script>
+        <img id="dmeLogo" class="image"src="/Content/images/untitled.bmp" />
+        <div id="position"class="results">
+            <ul id="ulPosition">
+            </ul>
+        </div>
+        <div class="counter">
+            <a></a>
+        </div>
+        <div>hey johnny</div>
+    </body>
 
-            // Start the client side server update interval
-            setInterval(updateServerModel, updateRate);
-        });
-
-        function updateServerModel() {
-            // Only update server if we have a new movement
-            if (moved) {
-                moveShapeHub.server.updateModel(shapeModel);
-                moved = false;
-            }
-            updateCounter();
-        }
-        
-
-        function updateCounter() {
-            var rowCount = $('#ulPosition li').length;
-            $('.counter a').text(rowCount);
-        }
-        
-        function updateCord() {
-            $('#position ul').append('<li class="pResults"> TOP: ' + shapeModel.top + ' ... LEFT: ' + shapeModel.left + '</li>');
-        }
-
-    });
-</script>
-    <img id="dmeLogo" class="image"src="/Content/images/untitled.bmp" />
-    <div id="position"class="results">
-        <ul id="ulPosition">
-        </ul>
-    </div>
-    <div class="counter">
-        <a></a>
-    </div>
-</body>
 </html>
