@@ -1,0 +1,7 @@
+C:\Users\crudm002\Desktop\moveshapes\C#\MoveShapeDemo\bin\MoveShapeDemo.dll
+C:\Users\crudm002\Desktop\moveshapes\C#\MoveShapeDemo\bin\MoveShapeDemo.pdb
+C:\Users\crudm002\Desktop\moveshapes\C#\MoveShapeDemo\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\crudm002\Desktop\moveshapes\C#\MoveShapeDemo\bin\Microsoft.Web.Infrastructure.xml
+C:\Users\crudm002\Desktop\moveshapes\C#\MoveShapeDemo\obj\Debug\MoveShapeDemo.csprojResolveAssemblyReference.cache
+C:\Users\crudm002\Desktop\moveshapes\C#\MoveShapeDemo\obj\Debug\MoveShapeDemo.dll
+C:\Users\crudm002\Desktop\moveshapes\C#\MoveShapeDemo\obj\Debug\MoveShapeDemo.pdb
