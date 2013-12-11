@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿
+<!--Hi there! Initial Demo and Credit to:-->
+<!--http://www.asp.net/signalr/overview/signalr-1x/getting-started/tutorial-high-frequency-realtime-with-signalr-->
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>SignalR Demo</title>
@@ -35,22 +39,21 @@
         <script src="/signalr/hubs"></script>
         <script>
             $(function () {
-
-                var count = 1;
-                var moveShapeHub = $.connection.moveShapeHub,
-                    $shape = $("#dmeLogo"),
-                    // Send a maximum of 10 messages per second 
-            // (mouse movements trigger a lot of messages)
-                    messageFrequency = 10,
-                    // Determine how often to send messages in
-            // time to abide by the messageFrequency
-                    updateRate = 1000 / messageFrequency,
-                    shapeModel = {
-                        left: 0,
-                        top: 0
-                    },
-                    moved = false;
-
+                
+                    var moveShapeHub = $.connection.moveShapeHub,
+                        $shape = $("#dmeLogo"),
+                        // Send a maximum of 10 messages per second 
+                        // (mouse movements trigger a lot of messages)
+                        messageFrequency = 10,
+                        // Determine how often to send messages in
+                        // time to abide by the messageFrequency
+                        value = 1000 / messageFrequency,
+                        shapeModel = {
+                            left: 0,
+                            top: 0
+                        },
+                        moved = false;
+                
                 moveShapeHub.client.updateShape = function (model) {
                     shapeModel = model;
                     // Slowly move the shape towards the new location (interpolate)
@@ -58,7 +61,7 @@
                     // we get to the next location we want to be at the "last" location
                     // We also clear the animation queue so that we start a new animation 
                     // and don't lag behind.
-                    $shape.animate(shapeModel, { duration: updateRate, queue: false });
+                    $shape.animate(shapeModel, { duration: value, queue: false });
                     updateCord();
                 };
 
@@ -68,12 +71,11 @@
                             shapeModel = $shape.offset();
                             updateCord();
                             moved = true;
-                   
                         }
                     });
-
+                    
                     // Start the client side server update interval
-                    setInterval(updateServerModel, updateRate);
+                    setInterval(updateServerModel, value);
                 });
 
                 function updateServerModel() {
